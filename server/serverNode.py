@@ -22,11 +22,18 @@ def send_global_model_to_clients(global_model_weights):
     # Zum Beispiel: publish(global_model_weights) für ein MQTT-System oder ähnliches
     pass
 
+def print_node_started_message():
+    print("Server gestartet.")
+
 # Verwende Flower-Server
 server = Server("tcp://*:5555")
 
 # Hauptausführung
 if __name__ == "__main__":
+
+    # Meldung, dass der Node gestartet wurde
+    print_node_started_message()
+
     # Warte auf Modellaktualisierungen von den Clients
     while True:
         model_updates = server.receive_model_updates()

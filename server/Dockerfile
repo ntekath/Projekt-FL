@@ -1,7 +1,7 @@
 FROM python:3.8
 
 # Kopiere die Anwendungsdateien (z.B., federated_learning_server.py)
-COPY federated_learning_server.py /app/
+COPY serverNode.py /app/
 
 # Kopiere die requirements.txt und installiere Abhängigkeiten
 COPY requirements.txt /app/
