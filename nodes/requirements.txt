@@ -1,0 +1,3 @@
+tensorflow==2.7.0
+tensorflow-federated==0.21.0
+flower==0.9.7
