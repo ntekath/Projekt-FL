@@ -1,24 +1,25 @@
 import flwr as fl
+from nodes import clientModel
 
-# Define the Flower client
+clientModel = clientModel()
+
 class MyFlowerClient(fl.client.NumPyClient):
-    def __init__(self, model):
+    def __init__(self, model, train_data_path):
         self.model = model
+        self.train_data_path = train_data_path
 
     def get_parameters(self):
-        return self.model.get_weights()
+        return self.model.get_parameters()
 
     def fit(self, parameters, config):
-        self.model.set_weights(parameters)
-        # Train the local model and return the number of examples used for training
-        num_examples = train_local_model(self.model, config)
-        return self.model.get_weights(), num_examples
+        self.model.train(parameters, self.train_data_path)
 
     def evaluate(self, parameters, config):
-        self.model.set_weights(parameters)
-        # Evaluate the local model and return the evaluation metrics
-        evaluation_metrics = evaluate_local_model(self.model, config)
-        return evaluation_metrics
+        pass
 
-# Create and start the Flower client
-fl.client.start_numpy_client("localhost:8080", client=MyFlowerClient(your_local_model))
+    def predict(self, parameters, data):
+        return self.model.predict(parameters, data)
+
+# Beispiel: Flower-Client starten
+train_data_path = "C:/Users/noelt/OneDrive/Desktop/Studium/PraxisProjekt/Datensatz/archive/Train_data.csv"
+fl.client.start_numpy_client("localhost:8080", client=MyFlowerClient(clientModel, train_data_path))

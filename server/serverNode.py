@@ -1,24 +1,26 @@
 import flwr as fl
+from nodes import clientModel
+from server.globalModel import GlobalModel
 
-# Define the Flower client
-class MyFlowerClient(fl.client.NumPyClient):
-    def __init__(self, model):
-        self.model = model
+# Globales Modell
+global_model = GlobalModel()
 
-    def get_parameters(self):
-        return self.model.get_weights()
+# Flower-Server starten
+fl.server.start_server("0.0.0.0:8080", [fl.client.NumPyClient(global_model) for _ in range(3)])
 
-    def fit(self, parameters, config):
-        self.model.set_weights(parameters)
-        # Train the local model and return the number of examples used for training
-        num_examples = train_local_model(self.model, config)
-        return self.model.get_weights(), num_examples
+# oder alternativ, wenn Sie spezifische Clients haben
+# clients = [
+#     MyFlowerClient1(your_local_model),
+#     MyFlowerClient2(your_local_model),
+#     MyFlowerClient3(your_local_model),
+# ]
+# fl.server.start_server("0.0.0.0:8080", clients)
 
-    def evaluate(self, parameters, config):
-        self.model.set_weights(parameters)
-        # Evaluate the local model and return the evaluation metrics
-        evaluation_metrics = evaluate_local_model(self.model, config)
-        return evaluation_metrics
+# Aggregationsstrategie
+def aggregate(parameters_list):
+    # Hier sollten Sie die Modellparameter aggregieren, z.B. den Durchschnitt
+    aggregated_parameters = sum(parameters_list) / len(parameters_list)
+    return aggregated_parameters
 
-# Create and start the Flower client
-fl.client.start_numpy_client("localhost:8080", client=MyFlowerClient(your_local_model))
+# Flower-Server starten und die Aggregationsstrategie festlegen
+fl.server.start_server("0.0.0.0:8080", [fl.client.NumPyClient(clientModel) for _ in range(3)], strategy=fl.server.strategy.FedAvg(aggregate))
