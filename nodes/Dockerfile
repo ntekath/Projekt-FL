@@ -1,23 +1,16 @@
+# Dockerfile for the nodes (clients)
+
 FROM python:3.8
 
-# Kopiere die requirements.txt in den Container
-COPY requirements.txt /app/
-
-# Setze das Arbeitsverzeichnis
+# Set the working directory
 WORKDIR /app
 
-# Installiere die Python-Pakete aus der requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Installiere jaxlib
-RUN pip install --no-cache-dir jaxlib==0.3.10
-
-# Installiere Flower
-RUN pip install --no-cache-dir flower
-
-
-# Kopiere den Federated Learning-Anwendungscode in den Container
+# Copy the client code into the container
 COPY clientNode.py /app/
 
-# Befehl zum Ausführen von Flower und deinem Anwendungscode
-CMD ["flower", "--port=5555", "--broker=redis://broker:6379/0", "--logging=debug", "--debug"]
+# Install any dependencies required for the client
+RUN pip install flwr
+
+# Command to run the client when the container starts
+CMD ["python", "clientNode.py"]
+

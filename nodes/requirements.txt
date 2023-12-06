@@ -1,5 +1,7 @@
 tensorflow>=2.7.0
 tensorflow-federated==0.33.0
 flower==0.9.7
-jaxlib>=0.3.10,<0.4.0
+//jaxlib>=0.3.10,<0.4.0
+numpy
+
 
